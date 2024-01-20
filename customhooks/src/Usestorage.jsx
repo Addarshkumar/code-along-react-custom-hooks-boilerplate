@@ -1,34 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const UseStorage = () => {
-  const [value, setValue] = useState('');
+const useStorage = (key, initialValue) => {
+  const [value, setValue] = useState(() => JSON.parse(localStorage.getItem(key)) || initialValue);
 
-  
-  useEffect(() => {
-    const storedValue = localStorage.getItem('newvalue');
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    const newValue = e.target.value;
+  const updateValue = (newValue) => {
     setValue(newValue);
-    localStorage.setItem('newvalue', JSON.stringify(newValue));
-    sessionStorage.setItem('newvalueSession', JSON.stringify(newValue));
+    localStorage.setItem(key, JSON.stringify(newValue));
+    sessionStorage.setItem(key, JSON.stringify(newValue));
   };
 
-  return (
-    <>
-      <input
-        value={value}
-        onChange={handleChange}
-        style={{ width: '200px', height: '30px' }}
-        type="text"
-        placeholder="Enter something to store"
-      />
-    </>
-  );
+  return [value, updateValue];
 };
 
-export default UseStorage;
+export default useStorage;
